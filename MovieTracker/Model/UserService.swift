@@ -77,6 +77,7 @@ struct UserService {
                 headers: [:],
                 body: credentials
             ) { _ in }
+            saveUser(credentials.username)
             saveToken(loginResult.accessToken, for: "accessToken")
             saveToken(loginResult.refreshToken, for: "refreshToken")
             return loginResult
@@ -98,6 +99,14 @@ struct UserService {
         ]
         SecItemDelete(query as CFDictionary)
         SecItemAdd(query as CFDictionary, nil)
+    }
+    
+    func saveUser(_ username: String) {
+        UserDefaults.standard.set(username, forKey: "username")
+    }
+    
+    func getUser() -> String? {
+        UserDefaults.standard.string(forKey: "username")
     }
     
     func loadToken(for key: String) -> String? {
