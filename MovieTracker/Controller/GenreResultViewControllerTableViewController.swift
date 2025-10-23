@@ -16,12 +16,10 @@ class GenreResultViewControllerTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         tableView.register(MovieCustomCell.self, forCellReuseIdentifier: "MovieCell")
         title = genre?.name
-        
+        currentPage = 1
         fetchMovies(for:genre!, page: currentPage)
-        
     }
     
     

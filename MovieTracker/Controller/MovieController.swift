@@ -13,6 +13,7 @@ class MovieController: UIViewController {
     var movieService: MovieService?
     var movies: [MovieItem] = []
     var currentPage = 1
+    var isSearch = false
     var isLoading = false
     
     override func viewDidLoad() {
@@ -22,19 +23,26 @@ class MovieController: UIViewController {
             .register(MovieCustomCell.self, forCellReuseIdentifier: "MovieCell")
         movieListTableView.rowHeight = UITableView.automaticDimension
         movieListTableView.estimatedRowHeight = 200 // any reasonable guess
-        fetchMovies(page: currentPage)
+        fetchMovies(page: currentPage, keyword: nil)
+        currentPage = 1
         super.viewDidLoad()
     }
     
-    func fetchMovies(page: Int) {
+    func fetchMovies(page: Int, keyword: String?) {
         guard !isLoading else { return }
         isLoading = true
         var newMovie = [MovieItem]()
-        
+        var result = [MovieItem]()
         // show footer loader
         movieListTableView.tableFooterView = createSpinnerFooter()
         Task {
-            let result = await self.movieService?.fetchMovies(page: page) ?? []
+            if isSearch, let keyword = keyword {
+                result = await movieService?
+                    .searchMovies(keyword: keyword, page: currentPage) ?? []
+            } else {
+                
+                 result = await self.movieService?.fetchMovies(page: page) ?? []
+            }
             self.isLoading = false
             self.movieListTableView.tableFooterView = nil
             newMovie = result
@@ -76,7 +84,7 @@ extension MovieController: UITableViewDataSource {
             // reached near the bottom
             if !isLoading {
                 currentPage += 1
-                fetchMovies(page: currentPage)
+                fetchMovies(page: currentPage,keyword: searchField.text)
             }
         }
     }
@@ -123,9 +131,11 @@ extension MovieController: UISearchBarDelegate {
         guard let keyword = searchField.text else {
             return
         }
+        currentPage = 1
+        isSearch = true
         Task {
             movies = await movieService?
-                .searchMovies(keyword: keyword, page: 1) ?? []
+                .searchMovies(keyword: keyword, page: currentPage) ?? []
             movieListTableView.reloadData()
         }
         searchField.resignFirstResponder()

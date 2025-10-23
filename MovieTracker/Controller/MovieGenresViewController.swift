@@ -98,7 +98,6 @@ extension MovieGenresViewController: UICollectionViewDelegate {
                 genreResultViewControllerTableViewController,
                 animated: true
             )
-        
     }
     
 }
