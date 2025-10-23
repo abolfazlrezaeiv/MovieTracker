@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MovieController: UIViewController {
+class HomeViewController: UIViewController {
     @IBOutlet weak var movieListTableView: UITableView!
     @IBOutlet weak var searchField: UISearchBar!
     var movieService: MovieService?
@@ -20,7 +20,7 @@ class MovieController: UIViewController {
         movieListTableView.delegate = self
         movieListTableView.dataSource = self
         movieListTableView
-            .register(MovieCustomCell.self, forCellReuseIdentifier: "MovieCell")
+            .register(MovieTableViewCell.self, forCellReuseIdentifier: "MovieCell")
         movieListTableView.rowHeight = UITableView.automaticDimension
         movieListTableView.estimatedRowHeight = 200 // any reasonable guess
         fetchMovies(page: currentPage, keyword: nil)
@@ -62,7 +62,7 @@ class MovieController: UIViewController {
 }
 
 
-extension MovieController: UITableViewDataSource {
+extension HomeViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         movies.count
     }
@@ -70,7 +70,7 @@ extension MovieController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "MovieCell",
-            for: indexPath) as! MovieCustomCell
+            for: indexPath) as! MovieTableViewCell
         cell.configure(movie: movies[indexPath.row])
         return cell
     }
@@ -107,14 +107,14 @@ extension MovieController: UITableViewDataSource {
 }
 
 
-extension MovieController: UITableViewDelegate {
+extension HomeViewController: UITableViewDelegate {
     
     func tableView(
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "MovieDetailsVC") as! MovieDetailsViewController
+        let vc = storyboard.instantiateViewController(withIdentifier: "MovieDetailsVC") as! MovieDetailViewController
         vc.movieId = movies[indexPath.row].id
         vc.movieService = movieService
         
@@ -126,7 +126,7 @@ extension MovieController: UITableViewDelegate {
     }
 }
 
-extension MovieController: UISearchBarDelegate {
+extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let keyword = searchField.text else {
             return

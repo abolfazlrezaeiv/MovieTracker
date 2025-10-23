@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MovieGenresViewController: UIViewController {
+class GenreViewController: UIViewController {
     var genresCollectionView: UICollectionView!
     var movieService: MovieService!
     
@@ -31,7 +31,7 @@ class MovieGenresViewController: UIViewController {
         setupViews()
         
         genresCollectionView.register(
-            GenresCollectionViewCell.self,
+            GenreCollectionViewCell.self,
             forCellWithReuseIdentifier: "GenreCell")
         loadGenres()
         self.genresCollectionView.dataSource = self
@@ -81,14 +81,14 @@ class MovieGenresViewController: UIViewController {
     }
 }
 
-extension MovieGenresViewController: UICollectionViewDelegate {
+extension GenreViewController: UICollectionViewDelegate {
     func collectionView(
         _ collectionView: UICollectionView,
         didSelectItemAt indexPath: IndexPath
     ) {
         let selectedMovie = genres[indexPath.row]
         
-        let genreResultViewControllerTableViewController = GenreResultViewControllerTableViewController()
+        let genreResultViewControllerTableViewController = MovieViewController()
         genreResultViewControllerTableViewController.genre = selectedMovie
         genreResultViewControllerTableViewController.movieService = self.movieService
         genreResultViewControllerTableViewController.currentPage = 1
@@ -103,7 +103,7 @@ extension MovieGenresViewController: UICollectionViewDelegate {
 }
 
 
-extension MovieGenresViewController: UICollectionViewDataSource {
+extension GenreViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return genres.count
     }
@@ -116,13 +116,13 @@ extension MovieGenresViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "GenreCell",
             for: indexPath
-        ) as! GenresCollectionViewCell
+        ) as! GenreCollectionViewCell
         cell.configure(with: genres[indexPath.row])
         return cell
     }
 }
 
-extension MovieGenresViewController: UICollectionViewDelegateFlowLayout {
+extension GenreViewController: UICollectionViewDelegateFlowLayout {
     // Define the size of each item
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,

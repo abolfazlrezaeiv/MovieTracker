@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MovieCustomCell: UITableViewCell {
+class MovieTableViewCell: UITableViewCell {
     
     let titleLabel = UILabel()
     let countryLabel = UILabel()

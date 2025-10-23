@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MovieDetailsViewController: UIViewController {
+class MovieDetailViewController: UIViewController {
     var pageVC: UIPageViewController!
     @IBOutlet weak var imageBox: UIView!
     @IBOutlet weak var movieTitle: UILabel!
@@ -80,7 +80,7 @@ class MovieDetailsViewController: UIViewController {
 
 }
 
-extension MovieDetailsViewController: UIPageViewControllerDataSource {
+extension MovieDetailViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         currentIndex -= 1
         return getVC(at: currentIndex)

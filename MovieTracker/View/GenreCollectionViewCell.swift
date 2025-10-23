@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GenresCollectionViewCell: UICollectionViewCell {
+class GenreCollectionViewCell: UICollectionViewCell {
     
     lazy var container: UIView = {
         let view = UIView()

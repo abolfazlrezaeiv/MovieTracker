@@ -31,10 +31,10 @@
             </objects>
             <point key="canvasLocation" x="-1731" y="-1001"/>
         </scene>
-        <!--Movie Controller-->
+        <!--Home View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="MovieController" id="BYZ-38-t0r" customClass="MovieController" customModule="MovieTracker" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MovieController" id="BYZ-38-t0r" customClass="HomeViewController" customModule="MovieTracker" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -74,10 +74,10 @@
             </objects>
             <point key="canvasLocation" x="-749" y="-1001"/>
         </scene>
-        <!--Movie Details View Controller-->
+        <!--Movie Detail View Controller-->
         <scene sceneID="rsT-eK-UJX">
             <objects>
-                <viewController storyboardIdentifier="MovieDetailsVC" id="5AV-uQ-esh" customClass="MovieDetailsViewController" customModule="MovieTracker" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MovieDetailsVC" id="5AV-uQ-esh" customClass="MovieDetailViewController" customModule="MovieTracker" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="npz-6k-VNW">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -161,10 +161,10 @@
             </objects>
             <point key="canvasLocation" x="142.74809160305344" y="-1001.4084507042254"/>
         </scene>
-        <!--Movie Genres View Controller-->
+        <!--Genre View Controller-->
         <scene sceneID="6lv-BS-fHf">
             <objects>
-                <viewController storyboardIdentifier="MovieGenresViewController" id="lFy-gR-vPS" customClass="MovieGenresViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MovieGenresViewController" id="lFy-gR-vPS" customClass="GenreViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="CZb-Br-3Is">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

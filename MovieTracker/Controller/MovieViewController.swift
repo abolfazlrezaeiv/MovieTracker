@@ -7,7 +7,7 @@
 
 import UIKit
 
-class GenreResultViewControllerTableViewController: UITableViewController {
+class MovieViewController: UITableViewController {
     var movieService: MovieService?
     var genre: Genre?
     var movies: [MovieItem] = []
@@ -16,7 +16,7 @@ class GenreResultViewControllerTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(MovieCustomCell.self, forCellReuseIdentifier: "MovieCell")
+        tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "MovieCell")
         title = genre?.name
         currentPage = 1
         fetchMovies(for:genre!, page: currentPage)
@@ -61,7 +61,7 @@ class GenreResultViewControllerTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "MovieCell",
             for: indexPath
-        ) as! MovieCustomCell
+        ) as! MovieTableViewCell
         let movie = movies[indexPath.row]
         cell.configure(movie: movie)
         return cell
@@ -119,7 +119,7 @@ class GenreResultViewControllerTableViewController: UITableViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let detailVC = storyboard.instantiateViewController(
             identifier: "MovieDetailsVC"
-        ) as! MovieDetailsViewController
+        ) as! MovieDetailViewController
         
         detailVC.movieService = movieService
         detailVC.movieId = movies[indexPath.row].id

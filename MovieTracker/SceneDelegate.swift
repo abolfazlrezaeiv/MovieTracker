@@ -30,12 +30,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let viewControllers = tabBarController.viewControllers {
             for viewController in viewControllers {
                 if let nav = viewController as? UINavigationController{
-                    if let moviesVC = nav.topViewController as? MovieController {
+                    if let moviesVC = nav.topViewController as? HomeViewController {
 
                         moviesVC.movieService = movieService
                     }
                     
-                    if let genreVC = nav.topViewController as? MovieGenresViewController {
+                    if let genreVC = nav.topViewController as? GenreViewController {
                         genreVC.movieService = movieService
                     }
                 }
