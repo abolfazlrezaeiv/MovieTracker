@@ -199,10 +199,10 @@
             </objects>
             <point key="canvasLocation" x="1020.6106870229007" y="-288.02816901408454"/>
         </scene>
-        <!--View Controller-->
+        <!--Auth View Controller-->
         <scene sceneID="EAY-c3-mxW">
             <objects>
-                <viewController id="fsf-xu-PsD" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="AuthView" id="fsf-xu-PsD" customClass="AuthViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Djz-Ll-cgq">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -215,7 +215,7 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="gray" title="Sign Up"/>
                                 <connections>
-                                    <segue destination="VW4-pu-PcL" kind="show" id="KG8-fd-qck"/>
+                                    <action selector="signUpPressed:" destination="fsf-xu-PsD" eventType="touchUpInside" id="iO4-Xq-Hmh"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Dcx-df-zGG">
@@ -226,7 +226,7 @@
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Login"/>
                                 <connections>
-                                    <segue destination="WHh-dA-agn" kind="show" id="4vY-fj-UaP"/>
+                                    <action selector="loginPressed:" destination="fsf-xu-PsD" eventType="touchUpInside" id="qei-B7-y10"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This is where you journey begins!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hmd-7y-PVx">
@@ -259,14 +259,61 @@
         <!--SignUp-->
         <scene sceneID="pqb-PR-6zK">
             <objects>
-                <viewController title="SignUp" id="VW4-pu-PcL" sceneMemberID="viewController">
+                <viewController title="SignUp" id="VW4-pu-PcL" customClass="SignUpViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="VFP-cp-vrE">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="nrU-4Q-loy">
+                                <rect key="frame" x="20" y="347" width="353" height="158"/>
+                                <subviews>
+                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Username" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AsQ-4q-fzw">
+                                        <rect key="frame" x="0.0" y="0.0" width="353" height="68"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="68" id="Tmo-S9-Op5"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Password" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BaZ-Rm-nzh">
+                                        <rect key="frame" x="0.0" y="90" width="353" height="68"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="68" id="Il8-rV-yX0"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                </subviews>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dBl-EK-szl">
+                                <rect key="frame" x="20" y="736" width="353" height="68"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="68" id="Mgs-tI-jo7"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Sign up"/>
+                                <connections>
+                                    <action selector="onSignupPressed:" destination="VW4-pu-PcL" eventType="touchUpInside" id="bDw-Cg-n5J"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="Vla-EJ-CyT"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Vla-EJ-CyT" firstAttribute="trailing" secondItem="nrU-4Q-loy" secondAttribute="trailing" constant="20" id="12E-Ae-hbo"/>
+                            <constraint firstItem="nrU-4Q-loy" firstAttribute="leading" secondItem="Vla-EJ-CyT" secondAttribute="leading" constant="20" id="Hme-7W-6dm"/>
+                            <constraint firstItem="dBl-EK-szl" firstAttribute="bottom" secondItem="Vla-EJ-CyT" secondAttribute="bottom" constant="20" id="QUy-vL-xzx"/>
+                            <constraint firstItem="Vla-EJ-CyT" firstAttribute="trailing" secondItem="dBl-EK-szl" secondAttribute="trailing" constant="20" id="QZ9-Bd-Dqr"/>
+                            <constraint firstItem="nrU-4Q-loy" firstAttribute="centerY" secondItem="VFP-cp-vrE" secondAttribute="centerY" id="gwz-ET-gun"/>
+                            <constraint firstItem="dBl-EK-szl" firstAttribute="leading" secondItem="Vla-EJ-CyT" secondAttribute="leading" constant="20" id="uxx-zb-PaN"/>
+                            <constraint firstItem="nrU-4Q-loy" firstAttribute="centerX" secondItem="VFP-cp-vrE" secondAttribute="centerX" id="vOB-C1-3uF"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="g2h-Ie-RU2"/>
+                    <connections>
+                        <outlet property="passwordField" destination="BaZ-Rm-nzh" id="CrH-q2-bRX"/>
+                        <outlet property="usernameField" destination="AsQ-4q-fzw" id="umd-0W-S3A"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HMa-I5-2Jp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -330,7 +377,7 @@
         <!--Navigation Controller-->
         <scene sceneID="axE-AF-ViJ">
             <objects>
-                <navigationController storyboardIdentifier="AuthView" automaticallyAdjustsScrollViewInsets="NO" id="bdO-Mh-fB0" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="bdO-Mh-fB0" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="QkC-hG-6gL">
                         <rect key="frame" x="0.0" y="118" width="393" height="54"/>

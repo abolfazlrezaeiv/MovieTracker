@@ -10,46 +10,63 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
-
-
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-        
+    private let httpClient = HttpClient(session: .shared)
+    private lazy var movieService = MovieService(client: httpClient)
+    private lazy var userService = UserService(client: httpClient)
+    
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        window = UIWindow(windowScene: windowScene)
         
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        
-        // ✅ Load your Tab Bar Controller instead of MovieController
-        guard let tabBarController = storyboard.instantiateViewController(withIdentifier: "MainTabBarController") as? UITabBarController else {
-            return
+        if userService.isLoggedIn() {
+            window?.rootViewController = makeMainTabBarController()
+        } else {
+            window?.rootViewController = makeAuthController()
         }
+        window?.makeKeyAndVisible()
+    }
+    
+    private func makeMainTabBarController() -> UITabBarController {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let tabBar = storyboard.instantiateViewController(withIdentifier: "MainTabBarController") as! UITabBarController
         
-        let httpClient = HttpClient(session: .shared)
-        let movieService = MovieService(client: httpClient)
-        
-        // ✅ Access your MovieController inside the TabBar if you want to inject dependencies
-        if let viewControllers = tabBarController.viewControllers {
-            for viewController in viewControllers {
-                if let nav = viewController as? UINavigationController{
-                    if let moviesVC = nav.topViewController as? HomeViewController {
-
-                        moviesVC.movieService = movieService
+        if let vcs = tabBar.viewControllers {
+            for vc in vcs {
+                if let nav = vc as? UINavigationController {
+                    if let home = nav.topViewController as? HomeViewController {
+                        home.movieService = movieService
                     }
-                    
-                    if let genreVC = nav.topViewController as? GenreViewController {
-                        genreVC.movieService = movieService
+                    if let genre = nav.topViewController as? GenreViewController {
+                        genre.movieService = movieService
                     }
                 }
             }
         }
-        
-        let authController = storyboard.instantiateViewController(withIdentifier: "AuthView")
-        
-        // ✅ Set root view controller
-        window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = authController
-        window?.makeKeyAndVisible()
+        return tabBar
     }
-
+    
+    private func makeAuthController() -> UIViewController {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let auth = storyboard.instantiateViewController(withIdentifier: "AuthView") as! AuthViewController
+        auth.userService = userService
+        // Provide a callback that SceneDelegate can use to switch roots after login
+        auth.onLoginSuccess = { [weak self] in
+            guard let self else { return }
+            let main = self.makeMainTabBarController()
+            self.transitionRoot(to: main)
+        }
+        return UINavigationController(rootViewController: auth)
+    }
+    
+    private func transitionRoot(to viewController: UIViewController) {
+        guard let window = window else { return }
+        // Optional animated crossfade
+        UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
+            window.rootViewController = viewController
+        })
+    }
+    
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

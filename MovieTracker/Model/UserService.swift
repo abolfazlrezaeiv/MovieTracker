@@ -69,14 +69,17 @@ struct UserService {
     }
     
     
-    func login(credentials: LoginRequest) async -> LoginResponse? {
+    func login(credentials: LoginRequest, completion : @escaping (Result<LoginResponse, any Error>) -> Void ) async -> LoginResponse? {
         do {
             let loginResult: LoginResponse = try await client.fetch(
                 endpoint: loginEndpoint,
                 method: .post,
                 headers: [:],
-                body: credentials
-            ) { _ in }
+                body: credentials,
+                completion: completion
+            )
+                
+            
             saveUser(credentials.username)
             saveToken(loginResult.accessToken, for: "accessToken")
             saveToken(loginResult.refreshToken, for: "refreshToken")

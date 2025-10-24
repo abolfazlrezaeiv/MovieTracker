@@ -43,12 +43,10 @@ class MovieViewController: UITableViewController {
                     }
                 }
             await MainActor.run {
-                
                 self.isLoading = false
                 let oldCount = self.movies.count - newMovies.count
                 let newCount = self.movies.count
-                let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0)
-                }
+                let indexPaths = (oldCount..<newCount).map { IndexPath(row: $0, section: 0) }
                 tableView.insertRows(at: indexPaths, with: .automatic)
                 self.tableView.tableFooterView = nil
             }

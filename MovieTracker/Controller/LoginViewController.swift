@@ -13,16 +13,51 @@ class LoginViewController: UIViewController {
     var loginButton: UIButton!
     var stackView: UIStackView!
     
+    var userService: UserService?
+    var onloginSuccess: (() -> Void)?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         usernameTextField.delegate = self
         passwordTextField.delegate = self
-
-        
+    }
+    
+    @objc func loginButtonTapped() {
+        Task {
+            var isSuccessful: Bool = false
+            var result = await userService?.login(
+                credentials: LoginRequest(
+                    username: usernameTextField.text ?? "",
+                    password: passwordTextField.text ?? "",
+                )
+            ) { result in
+                switch result {
+                case .success(_):
+                    isSuccessful = true
+                case .failure(let error):
+                    isSuccessful = false
+                    let dialog = UIAlertController(
+                        title: "Failed!",
+                        message: error.localizedDescription,
+                        preferredStyle: .alert
+                    )
+                    dialog.addAction(UIAlertAction(title: "OK", style: .default))
+                    self.present(dialog, animated: true)
+                }
+            }
+            
+            await MainActor.run {
+                if isSuccessful {
+                    self.onloginSuccess!()
+                }
+            }
+        }
     }
     
     func setupUI() {
+        view.backgroundColor = .systemBackground
         usernameTextField = UITextField()
         usernameTextField.placeholder = "Username"
         usernameTextField.layer.borderColor = UIColor.systemGreen.cgColor
