@@ -42,9 +42,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             }
         }
         
+        let authController = storyboard.instantiateViewController(withIdentifier: "AuthView")
+        
         // ✅ Set root view controller
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = tabBarController
+        window?.rootViewController = authController
         window?.makeKeyAndVisible()
     }
 
