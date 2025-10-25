@@ -33,14 +33,20 @@ struct LoginResponse : Decodable {
 }
 
 struct LoginRequest: Encodable {
+    let grantType: String
     let username: String
     let password: String
-    let grantType: String = "password"
     
     enum CodingKeys: String, CodingKey {
+        case grantType = "grant_type"
         case username
         case password
-        case grantType = "grant_type"
+    }
+    
+    init(grantType: String, username: String, password: String) {
+        self.grantType = grantType
+        self.username = username
+        self.password = password
     }
 }
 
@@ -48,19 +54,20 @@ struct UserService {
     let client: HttpClient
     
     let registerEndpoint = "/api/v1/register"
-    let loginEndpoint = "/api/v1/token"
+    let loginEndpoint = "/oauth/token"
     
     init(client: HttpClient) {
         self.client = client
     }
     
-    func register(user: RegisterRequest) async -> RegisterResponse? {
+    func register(user: RegisterRequest,completion : @escaping (Result<RegisterResponse, any Error>) -> Void ) async -> RegisterResponse? {
         do {
             let registerResult: RegisterResponse = try await client.fetch(
                 endpoint: registerEndpoint,
                 method: .post,
-                headers: [:],
-                body: user, completion:{_ in }
+                headers: ["Accept": "application/json"],
+                body: user,
+                completion:completion
             )
             return registerResult
         } catch {
@@ -74,7 +81,7 @@ struct UserService {
             let loginResult: LoginResponse = try await client.fetch(
                 endpoint: loginEndpoint,
                 method: .post,
-                headers: [:],
+                headers: ["Content-Type": "application/json"],
                 body: credentials,
                 completion: completion
             )
@@ -125,6 +132,16 @@ struct UserService {
             return String(data: data, encoding: .utf8)
         }
         return nil
+    }
+    
+    func removeToken() {
+        let keys: [String] = ["accessToken","refreshToken"]
+        keys.forEach { key in
+            SecItemDelete(
+                [kSecClass as String: kSecClassGenericPassword,
+                           kSecAttrAccount as String: key] as CFDictionary
+            )
+        }
     }
 
 }

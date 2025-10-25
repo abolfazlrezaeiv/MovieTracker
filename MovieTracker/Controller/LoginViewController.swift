@@ -27,24 +27,28 @@ class LoginViewController: UIViewController {
     @objc func loginButtonTapped() {
         Task {
             var isSuccessful: Bool = false
-            var result = await userService?.login(
+            let _ = await userService?.login(
                 credentials: LoginRequest(
-                    username: usernameTextField.text ?? "",
-                    password: passwordTextField.text ?? "",
+                    grantType: "password",
+                    username: "abolfazlrezaei.v@gmail.com" ?? usernameTextField.text ?? "",
+                    password: "123456" ?? passwordTextField.text ?? "",
+                    
                 )
             ) { result in
                 switch result {
                 case .success(_):
                     isSuccessful = true
                 case .failure(let error):
-                    isSuccessful = false
-                    let dialog = UIAlertController(
-                        title: "Failed!",
-                        message: error.localizedDescription,
-                        preferredStyle: .alert
-                    )
-                    dialog.addAction(UIAlertAction(title: "OK", style: .default))
-                    self.present(dialog, animated: true)
+                    Task {@MainActor in
+                        isSuccessful = false
+                        let dialog = UIAlertController(
+                            title: "Failed!",
+                            message: error.localizedDescription,
+                            preferredStyle: .alert
+                        )
+                        dialog.addAction(UIAlertAction(title: "OK", style: .default))
+                        self.present(dialog, animated: true)
+                    }
                 }
             }
             
@@ -65,6 +69,7 @@ class LoginViewController: UIViewController {
         usernameTextField.layer.borderWidth = 1.5
         usernameTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
         usernameTextField.leftViewMode = .always
+        usernameTextField.returnKeyType = .next
         
 
         passwordTextField = UITextField()
@@ -74,6 +79,8 @@ class LoginViewController: UIViewController {
         passwordTextField.layer.borderWidth = 1.5
         passwordTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
         passwordTextField.leftViewMode = .always
+        passwordTextField.returnKeyType = .done
+        
 
         
         loginButton = UIButton(type: .system)
@@ -123,4 +130,21 @@ class LoginViewController: UIViewController {
 
 extension LoginViewController: UITextFieldDelegate {
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField === usernameTextField {
+            // Move focus to password field when hitting Next on username
+            passwordTextField.becomeFirstResponder()
+        } else if textField === passwordTextField {
+            // Dismiss keyboard when hitting Done on password
+            textField.resignFirstResponder()
+        } else {
+            textField.resignFirstResponder()
+        }
+        return true
+    }
+    
+    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
+        usernameTextField.resignFirstResponder()
+        return true
+    }
 }

@@ -259,7 +259,7 @@
         <!--SignUp-->
         <scene sceneID="pqb-PR-6zK">
             <objects>
-                <viewController title="SignUp" id="VW4-pu-PcL" customClass="SignUpViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="SignUpViewController" title="SignUp" id="VW4-pu-PcL" customClass="SignUpViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="VFP-cp-vrE">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
