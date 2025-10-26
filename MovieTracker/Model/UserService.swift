@@ -134,7 +134,7 @@ struct UserService {
         return nil
     }
     
-    func removeToken() {
+    func logout(completion: () -> Void ) {
         let keys: [String] = ["accessToken","refreshToken"]
         keys.forEach { key in
             SecItemDelete(
@@ -142,6 +142,7 @@ struct UserService {
                            kSecAttrAccount as String: key] as CFDictionary
             )
         }
+        completion()
     }
 
 }

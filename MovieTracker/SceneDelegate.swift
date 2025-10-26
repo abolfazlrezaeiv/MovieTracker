@@ -40,6 +40,14 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         genre.movieService = movieService
                     }
                 }
+                if let profile = vc as? ProfileViewController {
+                    profile.userService = userService
+                    profile.onLogoutSucces = { [weak self] in
+                        guard let self else { return }
+                        let auth = self.makeAuthController()
+                        self.transitionRoot(to: auth)
+                    }
+                }
             }
         }
         return tabBar

@@ -347,6 +347,7 @@
                     <connections>
                         <segue destination="nLX-sr-Imk" kind="relationship" relationship="viewControllers" id="jic-GA-BCy"/>
                         <segue destination="UsU-mw-F5v" kind="relationship" relationship="viewControllers" id="rVf-Wf-dxr"/>
+                        <segue destination="obf-OH-kfB" kind="relationship" relationship="viewControllers" id="yMq-HT-OhB"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kKX-bM-7EV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -374,6 +375,22 @@
             </objects>
             <point key="canvasLocation" x="-803.81679389312978" y="-288.02816901408454"/>
         </scene>
+        <!--Profile-->
+        <scene sceneID="Caf-Fg-FHV">
+            <objects>
+                <viewController id="obf-OH-kfB" customClass="ProfileViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="gP9-r1-DaE">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="nSF-Xs-8Jw"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Profile" image="person" catalog="system" selectedImage="person.fill" id="nbj-LM-EpN"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1OJ-pu-2vs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-804" y="407"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="axE-AF-ViJ">
             <objects>
@@ -394,11 +411,13 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="56F-Z6-RkH"/>
+        <segue reference="L0g-ZZ-0yE"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="list.bullet.rectangle" catalog="system" width="128" height="93"/>
         <image name="list.bullet.rectangle.fill" catalog="system" width="128" height="93"/>
+        <image name="person" catalog="system" width="128" height="121"/>
+        <image name="person.fill" catalog="system" width="128" height="120"/>
         <image name="play.house" catalog="system" width="128" height="104"/>
         <image name="play.house.fill" catalog="system" width="128" height="104"/>
         <systemColor name="systemBackgroundColor">
