@@ -60,7 +60,7 @@ struct UserService {
         self.client = client
     }
     
-    func register(user: RegisterRequest,completion : @escaping (Result<RegisterResponse, any Error>) -> Void ) async -> RegisterResponse? {
+    func register(user: RegisterRequest,completion : @escaping (Result<RegisterResponse,  NetworkError>) -> Void ) async -> RegisterResponse? {
         do {
             let registerResult: RegisterResponse = try await client.fetch(
                 endpoint: registerEndpoint,
@@ -76,7 +76,7 @@ struct UserService {
     }
     
     
-    func login(credentials: LoginRequest, completion : @escaping (Result<LoginResponse, any Error>) -> Void ) async -> LoginResponse? {
+    func login(credentials: LoginRequest, completion : @escaping (Result<LoginResponse,  NetworkError>) -> Void ) async throws -> LoginResponse? {
         do {
             let loginResult: LoginResponse = try await client.fetch(
                 endpoint: loginEndpoint,
@@ -92,7 +92,8 @@ struct UserService {
             saveToken(loginResult.refreshToken, for: "refreshToken")
             return loginResult
         } catch {
-            return nil
+            print(error)
+            throw error
         }
     }
     

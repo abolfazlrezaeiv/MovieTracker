@@ -13,8 +13,45 @@ enum HttpMethod: String {
 
 enum NetworkError: Error {
     case invalidURL(String)
-    case invalidResponse(String)
-    case decodingError(String)
+    case invalidResponse
+    case statusCode(Int, data: Data?)
+    case decoding(Error)
+    case underlying(Error)
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidResponse:
+            return "The server response was not valid."
+        case .statusCode(let code, let data):
+            if let data, let body = String(data: data, encoding: .utf8), !body.isEmpty {
+                return "Server returned status \(code): \(body)"
+            } else {
+                return "Server returned status \(code)."
+            }
+        case .decoding(let err):
+            return "Failed to decode server response: \(err.localizedDescription)"
+        case .underlying(let err):
+            return err.localizedDescription
+        case .invalidURL(let err):
+            return err
+        }
+    }
+    
+    var failureReason: String? {
+        switch self {
+        case .invalidResponse:
+            return "Response did not match expected format."
+        case .statusCode(let code, _):
+            return "HTTP \(code)"
+        case .decoding:
+            return "JSON structure did not match expected model."
+        case .underlying:
+            return nil
+        case .invalidURL:
+            return "The url is unreachable"
+
+        }
+    }
 }
 
 class HttpClient {
@@ -30,7 +67,7 @@ class HttpClient {
         method: HttpMethod = .get,
         headers: [String: String] = [:],
         body: Encodable? = nil,
-        completion: @escaping (Result<T, Error>) -> Void
+        completion: @escaping (Result<T, NetworkError>) -> Void
     ) async throws -> T {
         guard let url = URL(string: endpoint, relativeTo: baseURL) else {
             throw NetworkError.invalidURL(endpoint)
@@ -55,19 +92,23 @@ class HttpClient {
         let (data, response) = try await session.data(for: request)
         
         guard let http = response as? HTTPURLResponse else {
-            completion(.failure(NetworkError.invalidResponse("Not a fancy response")))
-            throw NetworkError.invalidResponse("Not a fancy response")
+            completion(
+                .failure(NetworkError.invalidResponse)
+            )
+            throw NetworkError.invalidResponse
         }
         
         guard (200...299).contains(http.statusCode) else {
             // Helpful: log body to understand server error
-            let bodyString = String(data: data, encoding: .utf8) ?? "<non-utf8>"
+            _ = String(data: data, encoding: .utf8) ?? "<non-utf8>"
             completion(
                 .failure(
-                    NetworkError.invalidResponse(String( http.description))
-                )
+                    NetworkError.invalidResponse)
+                
             )
-            throw NetworkError.invalidResponse(http.description)
+            print(http.description)
+            print("+++++++")
+            throw NetworkError.invalidResponse
         }
         
 
@@ -78,9 +119,9 @@ class HttpClient {
         } catch {
             print(error)
             completion(
-                .failure(NetworkError.decodingError(""))
+                .failure(NetworkError.decoding(error))
             )
-            throw NetworkError.decodingError(error.localizedDescription)
+            throw NetworkError.decoding(error)
         }
     }
 }

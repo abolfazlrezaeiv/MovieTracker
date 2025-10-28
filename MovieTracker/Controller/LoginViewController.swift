@@ -25,40 +25,42 @@ class LoginViewController: UIViewController {
     }
     
     @objc func loginButtonTapped() {
-        Task {
-            var isSuccessful: Bool = false
-            let _ = await userService?.login(
-                credentials: LoginRequest(
-                    grantType: "password",
-                    username: "abolfazlrezaei.v@gmail.com" ?? usernameTextField.text ?? "",
-                    password: "123456" ?? passwordTextField.text ?? "",
-                    
-                )
-            ) { result in
-                switch result {
-                case .success(_):
-                    isSuccessful = true
-                case .failure(let error):
-                    Task {@MainActor in
-                        isSuccessful = false
-                        let dialog = UIAlertController(
-                            title: "Failed!",
-                            message: error.localizedDescription,
-                            preferredStyle: .alert
-                        )
-                        dialog.addAction(UIAlertAction(title: "OK", style: .default))
-                        self.present(dialog, animated: true)
+        if let username = usernameTextField.text, let password = passwordTextField.text {
+            Task {
+                var isSuccessful: Bool = false
+                let _ = try? await userService?.login(
+                    credentials: LoginRequest(
+                        grantType: "password",
+                        username: username,
+                        password: password,
+                        
+                    )
+                ) { result in
+                    switch result {
+                    case .success(_):
+                        isSuccessful = true
+                    case .failure(let error):
+                        Task {@MainActor in
+                            isSuccessful = false
+                            let dialog = UIAlertController(
+                                title: "Failed!",
+                                message: error.failureReason,
+                                preferredStyle: .alert
+                            )
+                            dialog.addAction(UIAlertAction(title: "OK", style: .default))
+                            self.present(dialog, animated: true)
+                        }
+                    }
+                }
+                
+                await MainActor.run {
+                    if isSuccessful {
+                        self.onloginSuccess!()
                     }
                 }
             }
-            
-            await MainActor.run {
-                if isSuccessful {
-                    self.onloginSuccess!()
-                }
-            }
         }
-    }
+        }
     
     func setupUI() {
         view.backgroundColor = .systemBackground
@@ -71,7 +73,7 @@ class LoginViewController: UIViewController {
         usernameTextField.leftViewMode = .always
         usernameTextField.returnKeyType = .next
         
-
+        
         passwordTextField = UITextField()
         passwordTextField.placeholder = "Password"
         passwordTextField.layer.borderColor = UIColor.systemGreen.cgColor
@@ -81,7 +83,7 @@ class LoginViewController: UIViewController {
         passwordTextField.leftViewMode = .always
         passwordTextField.returnKeyType = .done
         
-
+        
         
         loginButton = UIButton(type: .system)
         loginButton.setTitle("Log In", for: .normal)
@@ -104,7 +106,7 @@ class LoginViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         loginButton.translatesAutoresizingMaskIntoConstraints = false
         
-
+        
         
         NSLayoutConstraint.activate([
             loginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
@@ -118,13 +120,10 @@ class LoginViewController: UIViewController {
                 .constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
             stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
             
-            
             passwordTextField.heightAnchor.constraint(equalToConstant: 68),
             usernameTextField.heightAnchor.constraint(equalToConstant: 68),
         ])
-        
     }
-    
 }
 
 

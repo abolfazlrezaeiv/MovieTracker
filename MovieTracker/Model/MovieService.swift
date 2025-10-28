@@ -127,7 +127,7 @@ struct MovieService {
             return genres
     }
     
-    func getMoviesByGenre(genreId: String, page: Int, completion: @escaping (Result<MovieListRespose, any Error>) -> Void) async -> [MovieItem] {
+    func getMoviesByGenre(genreId: String, page: Int, completion: @escaping (Result<MovieListRespose, NetworkError>) -> Void) async -> [MovieItem] {
         do {
             let movies: MovieListRespose = try await client.fetch(
                 endpoint: "/api/v1/genres/\(genreId)/movies?page=\(page)",
