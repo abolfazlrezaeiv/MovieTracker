@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SwiftData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -14,9 +15,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private lazy var movieService = MovieService(client: httpClient)
     private lazy var userService = UserService(client: httpClient)
     
+    private var modelContainer: ModelContainer?
+    private var modelContext: ModelContext?
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: windowScene)
+        
+        do {
+            let container = try ModelContainer(for: FavoriteMovie.self)
+            self.modelContainer = container
+            self.modelContext = ModelContext(container)
+            
+        } catch {
+            fatalError("Failed to initialize SwiftData: \(error)")
+        }
         
         if userService.isLoggedIn() {
             window?.rootViewController = makeMainTabBarController()
@@ -105,4 +118,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
 }
-
