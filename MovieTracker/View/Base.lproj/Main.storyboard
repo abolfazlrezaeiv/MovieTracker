@@ -347,7 +347,7 @@
                     <connections>
                         <segue destination="nLX-sr-Imk" kind="relationship" relationship="viewControllers" id="jic-GA-BCy"/>
                         <segue destination="UsU-mw-F5v" kind="relationship" relationship="viewControllers" id="rVf-Wf-dxr"/>
-                        <segue destination="obf-OH-kfB" kind="relationship" relationship="viewControllers" id="yMq-HT-OhB"/>
+                        <segue destination="3Em-My-IK2" kind="relationship" relationship="viewControllers" id="yMq-HT-OhB"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kKX-bM-7EV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -375,7 +375,7 @@
             </objects>
             <point key="canvasLocation" x="-803.81679389312978" y="-288.02816901408454"/>
         </scene>
-        <!--Profile-->
+        <!--Profile View Controller-->
         <scene sceneID="Caf-Fg-FHV">
             <objects>
                 <viewController id="obf-OH-kfB" customClass="ProfileViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
@@ -385,11 +385,11 @@
                         <viewLayoutGuide key="safeArea" id="nSF-Xs-8Jw"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Profile" image="person" catalog="system" selectedImage="person.fill" id="nbj-LM-EpN"/>
+                    <navigationItem key="navigationItem" id="hgi-i8-6TL"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1OJ-pu-2vs" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-804" y="407"/>
+            <point key="canvasLocation" x="121.37404580152672" y="406.33802816901408"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="axE-AF-ViJ">
@@ -408,6 +408,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="IhR-4g-QaJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-4964.1221374045799" y="-609.15492957746483"/>
+        </scene>
+        <!--Profile-->
+        <scene sceneID="mVk-JN-5pZ">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="3Em-My-IK2" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Profile" image="person" catalog="system" selectedImage="person.fill" id="nbj-LM-EpN"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="MOe-GY-WIQ">
+                        <rect key="frame" x="0.0" y="118" width="393" height="54"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="obf-OH-kfB" kind="relationship" relationship="rootViewController" id="CFP-d3-qvF"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="YIe-Ys-yQv" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-805.3435114503817" y="406.33802816901408"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>

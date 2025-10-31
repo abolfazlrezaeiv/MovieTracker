@@ -6,12 +6,15 @@
 //
 
 import UIKit
+import SwiftData
 
 class HomeViewController: UIViewController {
     @IBOutlet weak var movieListTableView: UITableView!
     @IBOutlet weak var searchField: UISearchBar!
     var movieService: MovieService?
+    var modelContext: ModelContext!
     var movies: [MovieItem] = []
+    var favoriteMovies = Set<String>()
     var currentPage = 1
     var isSearch = false
     var isLoading = false
@@ -26,6 +29,28 @@ class HomeViewController: UIViewController {
         fetchMovies(page: currentPage, keyword: nil)
         currentPage = 1
         super.viewDidLoad()
+    }
+    
+    func loadFavoriteMovies() -> [FavoriteMovie] {
+        do {
+            var fetchDescriptor = FetchDescriptor<FavoriteMovie>(sortBy: [SortDescriptor<FavoriteMovie>(\.title, order: .forward)])
+            
+            return try modelContext.fetch(fetchDescriptor)
+        } catch {
+            print(error)
+            return []
+        }
+    }
+    
+    func addToFavorite(movie: MovieItem) {
+        var favorite = FavoriteMovie(title: movie.title, )
+        modelContext.insert(favorite)
+        
+        do {
+            try modelContext.save()
+        } catch {
+            print(error)
+        }
     }
     
     func fetchMovies(page: Int, keyword: String?) {
