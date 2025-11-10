@@ -18,6 +18,13 @@ class MovieTableViewCell: UITableViewCell {
     let infoStack = UIStackView()
     let favotiteIcon = UIImageView()
     
+    private var onFavoriteTapped: (() -> Void)?
+    
+    @objc private func handleFavoriteTap() {
+        onFavoriteTapped?()
+    }
+
+    
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -34,6 +41,12 @@ class MovieTableViewCell: UITableViewCell {
         contentView.addSubview(favotiteIcon)
         
         favotiteIcon.tintColor = .systemRed
+        favotiteIcon.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(
+            target: self,
+            action: #selector(handleFavoriteTap)
+        )
+        favotiteIcon.addGestureRecognizer(tap)
         
         poster.translatesAutoresizingMaskIntoConstraints = false
         infoStack.translatesAutoresizingMaskIntoConstraints = false
@@ -83,14 +96,19 @@ class MovieTableViewCell: UITableViewCell {
         ])
     }
  
-    func configure(movie: MovieItem, isFavorite: Bool) {
+    func configure(
+        movie: MovieItem,
+        isFavorite: Bool,
+        onFavoriteTapped: @escaping () -> Void
+    ) {
+        self.onFavoriteTapped = onFavoriteTapped
+        
         titleLabel.text = movie.title
         countryLabel.text = movie.country
         yearLabel.text = movie.year
         rateLabel.text = movie.imdbRating
         genresLabel.text = movie.genres?.joined(separator: ", ")
         favotiteIcon.image = UIImage(systemName: !isFavorite ? "heart" : "heart.fill")
-        
         
         guard let url = URL(string: movie.poster) else {
             return

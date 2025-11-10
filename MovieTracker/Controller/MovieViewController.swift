@@ -61,7 +61,9 @@ class MovieViewController: UITableViewController {
             for: indexPath
         ) as! MovieTableViewCell
         let movie = movies[indexPath.row]
-        cell.configure(movie: movie, isFavorite: false)
+        cell.configure(movie: movie, isFavorite: false) {
+            
+        }
         return cell
     }
     

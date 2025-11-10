@@ -14,7 +14,7 @@ class HomeViewController: UIViewController {
     var movieService: MovieService?
     var modelContext: ModelContext!
     var movies: [MovieItem] = []
-    var favoriteMovies = Set<String>()
+    var favoriteMovies = [FavoriteMovie]()
     var currentPage = 1
     var isSearch = false
     var isLoading = false
@@ -28,26 +28,32 @@ class HomeViewController: UIViewController {
         movieListTableView.estimatedRowHeight = 200 // any reasonable guess
         fetchMovies(page: currentPage, keyword: nil)
         currentPage = 1
+        loadFavoriteMovies()
         super.viewDidLoad()
     }
     
-    func loadFavoriteMovies() -> [FavoriteMovie] {
+    func loadFavoriteMovies() {
         do {
-            var fetchDescriptor = FetchDescriptor<FavoriteMovie>(sortBy: [SortDescriptor<FavoriteMovie>(\.title, order: .forward)])
-            
-            return try modelContext.fetch(fetchDescriptor)
+            let fetchDescriptor = FetchDescriptor<FavoriteMovie>(
+                sortBy: [SortDescriptor<FavoriteMovie>(\.title, order: .forward)]
+            )
+            let fetchResult = try modelContext?.fetch(fetchDescriptor)
+            if let favorites = fetchResult {
+                favoriteMovies = favorites
+            }
+            movieListTableView.reloadData()
         } catch {
             print(error)
-            return []
         }
     }
     
     func addToFavorite(movie: MovieItem) {
-        var favorite = FavoriteMovie(title: movie.title, )
+        let favorite = FavoriteMovie(title: movie.title,)
         modelContext.insert(favorite)
         
         do {
             try modelContext.save()
+            loadFavoriteMovies()
         } catch {
             print(error)
         }
@@ -96,7 +102,14 @@ extension HomeViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "MovieCell",
             for: indexPath) as! MovieTableViewCell
-        cell.configure(movie: movies[indexPath.row],isFavorite: false)
+        let isFavoriteItem = favoriteMovies.map { fav in
+            fav.title
+        }.contains(movies[indexPath.row].title)
+        
+        cell.configure(movie: movies[indexPath.row],isFavorite: isFavoriteItem) {
+            print(self.movies[indexPath.row].title)
+            self.addToFavorite(movie: self.movies[indexPath.row])
+        }
         return cell
     }
     

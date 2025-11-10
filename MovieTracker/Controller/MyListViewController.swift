@@ -40,7 +40,7 @@ class MyListViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell = tableView.dequeueReusableCell(
+        let cell = tableView.dequeueReusableCell(
             withIdentifier: "MovieItemCell",
             for: indexPath
         ) as! MovieTableViewCell
