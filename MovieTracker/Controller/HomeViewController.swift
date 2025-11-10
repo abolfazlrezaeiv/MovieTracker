@@ -96,7 +96,7 @@ extension HomeViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "MovieCell",
             for: indexPath) as! MovieTableViewCell
-        cell.configure(movie: movies[indexPath.row])
+        cell.configure(movie: movies[indexPath.row],isFavorite: false)
         return cell
     }
     

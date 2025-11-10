@@ -15,8 +15,8 @@ class MovieTableViewCell: UITableViewCell {
     let rateLabel = UILabel()
     let genresLabel = UILabel()
     let poster = UIImageView()
-    
     let infoStack = UIStackView()
+    let favotiteIcon = UIImageView()
     
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -31,9 +31,13 @@ class MovieTableViewCell: UITableViewCell {
     func setupViews() {
         contentView.addSubview(poster)
         contentView.addSubview(infoStack)
+        contentView.addSubview(favotiteIcon)
+        
+        favotiteIcon.tintColor = .systemRed
         
         poster.translatesAutoresizingMaskIntoConstraints = false
         infoStack.translatesAutoresizingMaskIntoConstraints = false
+        favotiteIcon.translatesAutoresizingMaskIntoConstraints = false
         
         poster.contentMode = .scaleAspectFill
         poster.clipsToBounds = true
@@ -68,16 +72,24 @@ class MovieTableViewCell: UITableViewCell {
             infoStack.topAnchor
                 .constraint(equalTo: contentView.topAnchor,constant: 12),
             infoStack.bottomAnchor
-                .constraint(equalTo: contentView.bottomAnchor,constant: -8)
+                .constraint(equalTo: contentView.bottomAnchor,constant: -8),
+            favotiteIcon.trailingAnchor
+                .constraint(equalTo:  contentView.trailingAnchor,constant: -12),
+            favotiteIcon.bottomAnchor
+                .constraint(equalTo: contentView.bottomAnchor,constant: -12),
+            favotiteIcon.widthAnchor.constraint(equalToConstant: 20),
+            favotiteIcon.heightAnchor.constraint(equalToConstant: 20)
+            
         ])
     }
  
-    func configure(movie: MovieItem) {
+    func configure(movie: MovieItem, isFavorite: Bool) {
         titleLabel.text = movie.title
         countryLabel.text = movie.country
         yearLabel.text = movie.year
         rateLabel.text = movie.imdbRating
         genresLabel.text = movie.genres?.joined(separator: ", ")
+        favotiteIcon.image = UIImage(systemName: !isFavorite ? "heart" : "heart.fill")
         
         
         guard let url = URL(string: movie.poster) else {
