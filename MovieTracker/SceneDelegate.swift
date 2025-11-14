@@ -73,7 +73,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     private func makeAuthController() -> UIViewController {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Auth", bundle: nil)
         let auth = storyboard.instantiateViewController(withIdentifier: "AuthView") as! AuthViewController
         auth.userService = userService
         // Provide a callback that SceneDelegate can use to switch roots after login

@@ -47,6 +47,16 @@ class HomeViewController: UIViewController {
         }
     }
     
+    func removeFromFavorite(movie: FavoriteMovie) {
+        modelContext.delete(movie)
+        do {
+            try modelContext.save()
+            loadFavoriteMovies()
+        } catch {
+            print(error)
+        }
+    }
+    
     func addToFavorite(movie: MovieItem) {
         let favorite = FavoriteMovie(title: movie.title,)
         modelContext.insert(favorite)
@@ -102,13 +112,17 @@ extension HomeViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "MovieCell",
             for: indexPath) as! MovieTableViewCell
-        let isFavoriteItem = favoriteMovies.map { fav in
-            fav.title
-        }.contains(movies[indexPath.row].title)
+        
+        let existingFavorite = favoriteMovies.first { $0.title == movies[indexPath.row].title }
+        let isFavoriteItem = (existingFavorite != nil)
         
         cell.configure(movie: movies[indexPath.row],isFavorite: isFavoriteItem) {
             print(self.movies[indexPath.row].title)
-            self.addToFavorite(movie: self.movies[indexPath.row])
+            if let favorite = existingFavorite {
+                self.removeFromFavorite(movie:favorite)
+            } else {
+                self.addToFavorite(movie: self.movies[indexPath.row])
+            }
         }
         return cell
     }
