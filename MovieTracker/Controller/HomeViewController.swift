@@ -32,6 +32,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
     }
     
+    
     func loadFavoriteMovies() {
         do {
             let fetchDescriptor = FetchDescriptor<FavoriteMovie>(
