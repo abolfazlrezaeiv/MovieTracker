@@ -50,13 +50,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let vcs = tabBar.viewControllers {
             for vc in vcs {
                 if let nav = vc as? UINavigationController {
+                    /// Home
                     if let home = nav.topViewController as? HomeViewController {
                         home.movieService = movieService
                         home.modelContext = modelContext
                     }
+                    /// Genre
                     if let genre = nav.topViewController as? GenreViewController {
                         genre.movieService = movieService
                     }
+                    /// Profile
                     if let profile = nav.topViewController as? ProfileViewController {
                         profile.userService = userService
                         profile.onLogoutSucces = { [weak self] in
@@ -66,7 +69,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         }
                     }
                 }
-               
             }
         }
         return tabBar

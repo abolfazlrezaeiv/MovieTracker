@@ -12,15 +12,18 @@ class AuthViewController: UIViewController {
     var onLoginSuccess: (() -> Void)?
     
     override func viewDidLoad() {
+        super.viewDidLoad()
         
     }
     
     @IBAction func loginPressed(_ sender: UIButton) {
-        let loginVC = LoginViewController()
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let loginVC = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
         loginVC.userService = self.userService
-        loginVC.onloginSuccess = onLoginSuccess
+        loginVC.onLoginSuccess = onLoginSuccess
         navigationController?.pushViewController(loginVC, animated: true)
     }
+    
     @IBAction func signUpPressed(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let vc = storyboard.instantiateViewController(withIdentifier: "SignUpViewController") as! SignUpViewController

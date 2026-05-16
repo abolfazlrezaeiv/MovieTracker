@@ -57,6 +57,14 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
         didSelectRowAt indexPath: IndexPath
     ) {
         print(indexPath.row)
+        if indexPath.row == 0 {
+            navigationController?
+                .pushViewController(
+                    FavoriteMoviesViewController(),
+                    animated: true
+                )
+        }
+        
         if indexPath.row == 1 {
             userService?.logout(completion:  {
                 self.onLogoutSucces?()

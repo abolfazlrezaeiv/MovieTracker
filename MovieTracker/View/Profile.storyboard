@@ -24,6 +24,36 @@
             </objects>
             <point key="canvasLocation" x="121.37404580152672" y="406.33802816901408"/>
         </scene>
+        <!--Favorite Movies View Controller-->
+        <scene sceneID="2Kj-JR-dOW">
+            <objects>
+                <viewController id="v0s-bX-vMG" customClass="FavoriteMoviesViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="O8E-jj-dDK">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Uap-vz-hqO">
+                                <rect key="frame" x="16" y="0.0" width="361" height="852"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vVI-tG-Npc"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="vVI-tG-Npc" firstAttribute="trailing" secondItem="Uap-vz-hqO" secondAttribute="trailing" constant="16" id="7YY-fr-mou"/>
+                            <constraint firstItem="Uap-vz-hqO" firstAttribute="leading" secondItem="vVI-tG-Npc" secondAttribute="leading" constant="16" id="ClF-Zv-Y0O"/>
+                            <constraint firstItem="Uap-vz-hqO" firstAttribute="centerY" secondItem="O8E-jj-dDK" secondAttribute="centerY" id="I8N-h3-7xw"/>
+                            <constraint firstAttribute="bottom" secondItem="Uap-vz-hqO" secondAttribute="bottom" id="pmt-pv-lOt"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="Uap-vz-hqO" id="SSL-0c-Kd2"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Fq2-zG-fd3" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="951.90839694656484" y="406.33802816901408"/>
+        </scene>
         <!--Profile-->
         <scene sceneID="mVk-JN-5pZ">
             <objects>
@@ -35,6 +65,9 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="8A3-ma-jXG">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="obf-OH-kfB" kind="relationship" relationship="rootViewController" id="CFP-d3-qvF"/>
                     </connections>

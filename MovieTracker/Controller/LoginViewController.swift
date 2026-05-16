@@ -14,7 +14,7 @@ class LoginViewController: UIViewController {
     var stackView: UIStackView!
     
     var userService: UserService?
-    var onloginSuccess: (() -> Void)?
+    var onLoginSuccess: (() -> Void)?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,7 +55,7 @@ class LoginViewController: UIViewController {
                 
                 await MainActor.run {
                     if isSuccessful {
-                        self.onloginSuccess!()
+                        self.onLoginSuccess!()
                     }
                 }
             }

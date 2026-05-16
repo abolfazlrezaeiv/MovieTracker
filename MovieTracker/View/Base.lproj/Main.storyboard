@@ -57,7 +57,7 @@
         <scene sceneID="xwt-mh-iky">
             <objects>
                 <viewControllerPlaceholder storyboardName="Genre" referencedIdentifier="UINavigationController-UsU-mw-F5v" id="XXQ-ph-OG3" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="lY9-4c-jNZ"/>
+                    <tabBarItem key="tabBarItem" title="" id="lY9-4c-jNZ"/>
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1st-h5-ukF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -59,7 +59,21 @@ class HomeViewController: UIViewController {
     }
     
     func addToFavorite(movie: MovieItem) {
-        let favorite = FavoriteMovie(title: movie.title,)
+        var poster: Data?
+        guard let url = URL(string: movie.poster) else {
+            return
+        }
+        URLSession.shared.dataTask(
+                with: url,
+                completionHandler: { data,response,error in
+                    DispatchQueue.main.async {
+                        if let data = data {
+                            poster = data
+                        }
+                    }
+                }
+            ).resume()
+        let favorite = FavoriteMovie(title: movie.title,poster: poster, )
         modelContext.insert(favorite)
         
         do {

@@ -15,6 +15,9 @@ class GenreViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tabBarItem = UITabBarItem(title: "Home",
+                                                 image: UIImage(named: "home"),
+                                                 selectedImage: UIImage(named: "home-filled"))
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 8
