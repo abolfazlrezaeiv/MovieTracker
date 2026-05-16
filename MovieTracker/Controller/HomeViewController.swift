@@ -20,12 +20,9 @@ class HomeViewController: UIViewController {
     var isLoading = false
     
     override func viewDidLoad() {
-        movieListTableView.delegate = self
-        movieListTableView.dataSource = self
-        movieListTableView
-            .register(MovieTableViewCell.self, forCellReuseIdentifier: "MovieCell")
-        movieListTableView.rowHeight = UITableView.automaticDimension
-        movieListTableView.estimatedRowHeight = 200 // any reasonable guess
+        super.viewDidLoad()
+        configureHomeAppearance()
+        setupHomeUI()
         fetchMovies(page: currentPage, keyword: nil)
         currentPage = 1
         loadFavoriteMovies()
@@ -35,16 +32,28 @@ class HomeViewController: UIViewController {
             name: .favoritesDidChange,
             object: nil
         )
-        super.viewDidLoad()
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
+    private func setupHomeUI() {
+        AuthTheme.styleSearchBar(searchField)
+        AuthTheme.styleMovieListTableView(movieListTableView)
+        AuthTheme.addDismissKeyboardGesture(to: view)
+
+        movieListTableView.delegate = self
+        movieListTableView.dataSource = self
+        movieListTableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "MovieCell")
+        movieListTableView.rowHeight = UITableView.automaticDimension
+        movieListTableView.estimatedRowHeight = 156
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        AuthTheme.configureTabBar(tabBarController?.tabBar)
         loadFavoriteMovies()
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     @objc private func handleFavoritesDidChange() {
@@ -151,8 +160,7 @@ extension HomeViewController: UITableViewDataSource {
         let existingFavorite = favoriteMovies.first { $0.movieId == movies[indexPath.row].id }
         let isFavoriteItem = (existingFavorite != nil)
         
-        cell.configure(movie: movies[indexPath.row],isFavorite: isFavoriteItem) {
-            print(self.movies[indexPath.row].title)
+        cell.configure(movie: movies[indexPath.row], isFavorite: isFavoriteItem) {
             if let favorite = existingFavorite {
                 self.removeFromFavorite(movie:favorite)
             } else {
@@ -177,19 +185,7 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func createSpinnerFooter() -> UIView {
-        let footerView = UIView(
-            frame: CGRect(
-                x: 0,
-                y: 0,
-                width: movieListTableView.frame.size.width,
-                height: 50
-            )
-        )
-        let spinner = UIActivityIndicatorView(style: .medium)
-        spinner.center = footerView.center
-        spinner.startAnimating()
-        footerView.addSubview(spinner)
-        return footerView
+        AuthTheme.makeLoadingFooter(width: movieListTableView.bounds.width)
     }
 }
 
@@ -215,17 +211,32 @@ extension HomeViewController: UITableViewDelegate {
 
 extension HomeViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let keyword = searchField.text else {
+        guard let keyword = searchField.text, !keyword.trimmingCharacters(in: .whitespaces).isEmpty else {
             return
         }
         currentPage = 1
         isSearch = true
-        Task {
-            movies = await movieService?
-                .searchMovies(keyword: keyword, page: currentPage) ?? []
-            movieListTableView.reloadData()
-        }
+        isLoading = false
+        movies = []
+        movieListTableView.reloadData()
+        fetchMovies(page: currentPage, keyword: keyword)
         searchField.resignFirstResponder()
+    }
+
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        guard searchField.text?.trimmingCharacters(in: .whitespaces).isEmpty == true, isSearch else {
+            return
+        }
+        resetToBrowseMode()
+    }
+
+    private func resetToBrowseMode() {
+        isSearch = false
+        currentPage = 1
+        isLoading = false
+        movies = []
+        movieListTableView.reloadData()
+        fetchMovies(page: currentPage, keyword: nil)
     }
 }
 

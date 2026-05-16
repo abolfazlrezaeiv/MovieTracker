@@ -72,57 +72,10 @@
                     <view key="view" contentMode="scaleToFill" id="QZN-V8-EcV">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="Huv-jD-3MU">
-                                <rect key="frame" x="20" y="347" width="353" height="158"/>
-                                <subviews>
-                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Username" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="M9P-XD-exf">
-                                        <rect key="frame" x="0.0" y="0.0" width="353" height="68"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="68" id="fAZ-Yg-d6Z"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
-                                    <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Password" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="LHm-kA-K9x">
-                                        <rect key="frame" x="0.0" y="90" width="353" height="68"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="68" id="CqB-9a-NJV"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                    </textField>
-                                </subviews>
-                            </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BKl-ar-NWV">
-                                <rect key="frame" x="20" y="736" width="353" height="68"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="68" id="u1P-db-ClK"/>
-                                </constraints>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Sign up"/>
-                                <connections>
-                                    <action selector="onSignupPressed:" destination="1wl-tx-JtW" eventType="touchUpInside" id="voO-80-OYH"/>
-                                </connections>
-                            </button>
-                        </subviews>
                         <viewLayoutGuide key="safeArea" id="klL-zV-z6U"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <constraints>
-                            <constraint firstItem="BKl-ar-NWV" firstAttribute="leading" secondItem="klL-zV-z6U" secondAttribute="leading" constant="20" id="8A8-Qb-PfB"/>
-                            <constraint firstItem="Huv-jD-3MU" firstAttribute="centerX" secondItem="QZN-V8-EcV" secondAttribute="centerX" id="JX8-ll-xlN"/>
-                            <constraint firstItem="klL-zV-z6U" firstAttribute="trailing" secondItem="Huv-jD-3MU" secondAttribute="trailing" constant="20" id="aPR-41-bgY"/>
-                            <constraint firstItem="Huv-jD-3MU" firstAttribute="leading" secondItem="klL-zV-z6U" secondAttribute="leading" constant="20" id="lGC-ai-aQj"/>
-                            <constraint firstItem="klL-zV-z6U" firstAttribute="trailing" secondItem="BKl-ar-NWV" secondAttribute="trailing" constant="20" id="nLU-rd-avA"/>
-                            <constraint firstItem="BKl-ar-NWV" firstAttribute="bottom" secondItem="klL-zV-z6U" secondAttribute="bottom" constant="20" id="sFl-GU-lcs"/>
-                            <constraint firstItem="Huv-jD-3MU" firstAttribute="centerY" secondItem="QZN-V8-EcV" secondAttribute="centerY" id="yxL-vu-h0X"/>
-                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="2O8-e1-rsl"/>
-                    <connections>
-                        <outlet property="passwordField" destination="LHm-kA-K9x" id="eLi-2z-qbz"/>
-                        <outlet property="usernameField" destination="M9P-XD-exf" id="reS-EW-fYL"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X1w-t3-apm" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -131,7 +84,7 @@
         <!--Login-->
         <scene sceneID="nfA-s6-QOF">
             <objects>
-                <viewController title="Login" id="hiq-ln-eOf" customClass="LoginViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" title="Login" id="hiq-ln-eOf" customClass="LoginViewController" customModule="MovieTracker" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Sa2-bC-rf2">
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

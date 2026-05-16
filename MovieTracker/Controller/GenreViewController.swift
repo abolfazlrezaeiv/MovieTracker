@@ -6,116 +6,96 @@
 //
 
 import UIKit
+import SwiftData
 
 class GenreViewController: UIViewController {
     var genresCollectionView: UICollectionView!
     var movieService: MovieService!
-    
+    var modelContext: ModelContext!
+
     var genres: [Genre] = []
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.tabBarItem = UITabBarItem(title: "Home",
-                                                 image: UIImage(named: "home"),
-                                                 selectedImage: UIImage(named: "home-filled"))
+        configureHomeAppearance(title: "Genres")
+        setupCollectionView()
+        loadGenres()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        AuthTheme.configureTabBar(tabBarController?.tabBar)
+    }
+
+    private func setupCollectionView() {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumInteritemSpacing = 8
-        layout.minimumLineSpacing = 8
-        
-        
-        self.genresCollectionView = UICollectionView(
-            frame: .zero,
-            collectionViewLayout: layout
-        )
-        self.genresCollectionView.backgroundColor = .systemBackground
-        
-        view.addSubview(genresCollectionView)
-        setupViews()
-        
-        genresCollectionView.register(
-            GenreCollectionViewCell.self,
-            forCellWithReuseIdentifier: "GenreCell")
-        loadGenres()
-        self.genresCollectionView.dataSource = self
-        self.genresCollectionView.delegate = self
-        
-    }
-    
-    func setupViews() {
+        layout.minimumInteritemSpacing = 12
+        layout.minimumLineSpacing = 12
+
+        genresCollectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        AuthTheme.styleGenresCollectionView(genresCollectionView)
         genresCollectionView.translatesAutoresizingMaskIntoConstraints = false
-        
+        genresCollectionView.register(GenreCollectionViewCell.self, forCellWithReuseIdentifier: "GenreCell")
+        genresCollectionView.dataSource = self
+        genresCollectionView.delegate = self
+
+        view.addSubview(genresCollectionView)
         NSLayoutConstraint.activate([
             genresCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            genresCollectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            genresCollectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            genresCollectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            genresCollectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            genresCollectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            genresCollectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
-    
+
     private func loadGenres() {
         Task {
             do {
-                let genres = try await self.movieService?.getGenres()
+                let genres = try await movieService.getGenres()
                 await MainActor.run {
-                    self.genres = genres ?? []
+                    self.genres = genres
                     self.genresCollectionView.reloadData()
                 }
             } catch {
                 await MainActor.run {
-                    let alert = UIAlertController(title: "Failed to Load Genres",
-                                                  message: (error as NSError).localizedDescription,
-                                                  preferredStyle: .alert)
-                    alert
-                        .addAction(
-                            UIAlertAction(
-                                title: "OK",
-                                style: .default,
-                                handler: { _ in
-                                    alert.dismiss(animated: true)
-                                }
-                            )
-                        )
+                    let alert = UIAlertController(
+                        title: "Could not load genres",
+                        message: (error as NSError).localizedDescription,
+                        preferredStyle: .alert
+                    )
+                    alert.addAction(UIAlertAction(title: "OK", style: .default))
                     self.present(alert, animated: true)
                 }
             }
-          
         }
     }
 }
 
 extension GenreViewController: UICollectionViewDelegate {
-    func collectionView(
-        _ collectionView: UICollectionView,
-        didSelectItemAt indexPath: IndexPath
-    ) {
-        let selectedMovie = genres[indexPath.row]
-        
-        let genreResultViewControllerTableViewController = MovieViewController()
-        genreResultViewControllerTableViewController.genre = selectedMovie
-        genreResultViewControllerTableViewController.movieService = self.movieService
-        genreResultViewControllerTableViewController.currentPage = 1
-        
-        navigationController?
-            .pushViewController(
-                genreResultViewControllerTableViewController,
-                animated: true
-            )
-    }
-    
-}
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let selectedGenre = genres[indexPath.row]
 
+        let moviesVC = MovieViewController()
+        moviesVC.genre = selectedGenre
+        moviesVC.movieService = movieService
+        moviesVC.modelContext = modelContext
+        moviesVC.currentPage = 1
+
+        navigationController?.pushViewController(moviesVC, animated: true)
+    }
+}
 
 extension GenreViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return genres.count
+        genres.count
     }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(
             withReuseIdentifier: "GenreCell",
             for: indexPath
@@ -126,41 +106,29 @@ extension GenreViewController: UICollectionViewDataSource {
 }
 
 extension GenreViewController: UICollectionViewDelegateFlowLayout {
-    // Define the size of each item
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let itemsPerRow: CGFloat = 3
-        let padding: CGFloat = 10
-        let totalPadding = padding * (itemsPerRow + 1)
-        let availableWidth = collectionView.frame.width - totalPadding
-        let itemWidth = availableWidth / itemsPerRow
-        return CGSize(width: itemWidth, height: itemWidth)
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let padding = AuthTheme.horizontalPadding
+        let spacing: CGFloat = 12
+        let itemsPerRow: CGFloat = 2
+        let totalSpacing = spacing * (itemsPerRow - 1) + padding * 2
+        let width = (collectionView.bounds.width - totalSpacing) / itemsPerRow
+        return CGSize(width: width, height: 108)
     }
-    
-    // Define spacing between cells
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0
-    }
-    
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 10
-    }
-    
-    // Optional: add padding on the sides
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(
-            top: 10,
-            left: 10,
-            bottom: 10,
-            right: 10
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        insetForSectionAt section: Int
+    ) -> UIEdgeInsets {
+        UIEdgeInsets(
+            top: 8,
+            left: AuthTheme.horizontalPadding,
+            bottom: 20,
+            right: AuthTheme.horizontalPadding
         )
     }
 }
-

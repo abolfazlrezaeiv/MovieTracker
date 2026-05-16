@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  LoginViewController.swift
 //  MovieTracker
 //
 //  Created by Abolfazl Rezaei on 10/24/25.
@@ -8,142 +8,154 @@
 import UIKit
 
 class LoginViewController: UIViewController {
-    var usernameTextField: UITextField!
-    var passwordTextField: UITextField!
-    var loginButton: UIButton!
-    var stackView: UIStackView!
-    
+    private let scrollView = UIScrollView()
+    private let contentStack = UIStackView()
+    private let usernameTextField = UITextField()
+    private let passwordTextField = UITextField()
+    private let loginButton = UIButton(type: .system)
+    private let activityIndicator = UIActivityIndicatorView(style: .medium)
+
     var userService: UserService?
     var onLoginSuccess: (() -> Void)?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Log In"
+        configureAuthAppearance()
         setupUI()
         loginButton.addTarget(self, action: #selector(loginButtonTapped), for: .touchUpInside)
         usernameTextField.delegate = self
         passwordTextField.delegate = self
     }
-    
-    @objc func loginButtonTapped() {
-        if let username = usernameTextField.text, let password = passwordTextField.text {
-            Task {
-                var isSuccessful: Bool = false
-                let _ = try? await userService?.login(
-                    credentials: LoginRequest(
-                        grantType: "password",
-                        username: username,
-                        password: password,
-                        
-                    )
-                ) { result in
-                    switch result {
-                    case .success(_):
-                        isSuccessful = true
-                    case .failure(let error):
-                        Task {@MainActor in
-                            isSuccessful = false
-                            let dialog = UIAlertController(
-                                title: "Failed!",
-                                message: error.failureReason,
-                                preferredStyle: .alert
-                            )
-                            dialog.addAction(UIAlertAction(title: "OK", style: .default))
-                            self.present(dialog, animated: true)
-                        }
-                    }
-                }
-                
-                await MainActor.run {
-                    if isSuccessful {
-                        self.onLoginSuccess!()
+
+    @objc private func loginButtonTapped() {
+        guard let username = usernameTextField.text, !username.isEmpty,
+              let password = passwordTextField.text, !password.isEmpty else {
+            presentAuthAlert(title: "Missing info", message: "Enter your username and password.")
+            return
+        }
+
+        setLoading(true)
+        Task {
+            var isSuccessful = false
+            _ = try? await userService?.login(
+                credentials: LoginRequest(
+                    grantType: "password",
+                    username: username,
+                    password: password
+                )
+            ) { result in
+                switch result {
+                case .success:
+                    isSuccessful = true
+                case .failure(let error):
+                    Task { @MainActor in
+                        self.setLoading(false)
+                        self.presentAuthAlert(
+                            title: "Log in failed",
+                            message: error.failureReason ?? error.localizedDescription
+                        )
                     }
                 }
             }
+
+            await MainActor.run {
+                self.setLoading(false)
+                if isSuccessful {
+                    self.onLoginSuccess?()
+                }
+            }
         }
-        }
-    
-    func setupUI() {
-        view.backgroundColor = .systemBackground
-        usernameTextField = UITextField()
-        usernameTextField.placeholder = "Username"
-        usernameTextField.layer.borderColor = UIColor.systemGreen.cgColor
-        usernameTextField.layer.cornerRadius = 12
-        usernameTextField.layer.borderWidth = 1.5
-        usernameTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
-        usernameTextField.leftViewMode = .always
+    }
+
+    private func setupUI() {
+        AuthTheme.addDismissKeyboardGesture(to: view)
+
+        let header = AuthTheme.makeHeaderStack(
+            title: "Welcome back",
+            subtitle: "Sign in to pick up where you left off."
+        )
+
+        AuthTheme.styleTextField(usernameTextField, placeholder: "Username")
         usernameTextField.returnKeyType = .next
-        
-        
-        passwordTextField = UITextField()
-        passwordTextField.placeholder = "Password"
-        passwordTextField.layer.borderColor = UIColor.systemGreen.cgColor
-        passwordTextField.layer.cornerRadius = 12
-        passwordTextField.layer.borderWidth = 1.5
-        passwordTextField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 0))
-        passwordTextField.leftViewMode = .always
+        AuthTheme.styleTextField(passwordTextField, placeholder: "Password", isSecure: true)
         passwordTextField.returnKeyType = .done
-        
-        
-        
-        loginButton = UIButton(type: .system)
-        loginButton.setTitle("Log In", for: .normal)
-        loginButton.titleLabel?.font = .systemFont(ofSize: 18, weight: .semibold)
-        loginButton.backgroundColor = .systemBlue
-        loginButton.setTitleColor(.white, for: .normal)
-        loginButton.layer.cornerRadius = 12
-        
-        stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 10
-        stackView.distribution = .fill
-        
-        stackView.addArrangedSubview(usernameTextField)
-        stackView.addArrangedSubview(passwordTextField)
-        
-        view.addSubview(stackView)
-        view.addSubview(loginButton)
-        
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        loginButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        
-        
+        AuthTheme.stylePrimaryButton(loginButton, title: "Log In")
+
+        activityIndicator.color = .white
+        activityIndicator.hidesWhenStopped = true
+
+        let fieldsStack = UIStackView(arrangedSubviews: [usernameTextField, passwordTextField])
+        fieldsStack.axis = .vertical
+        fieldsStack.spacing = 14
+
+        let buttonStack = UIStackView(arrangedSubviews: [loginButton, activityIndicator])
+        buttonStack.axis = .vertical
+        buttonStack.alignment = .center
+        buttonStack.spacing = 12
+
+        contentStack.axis = .vertical
+        contentStack.spacing = 24
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+        contentStack.addArrangedSubview(header)
+        contentStack.addArrangedSubview(fieldsStack)
+        contentStack.addArrangedSubview(buttonStack)
+        contentStack.setCustomSpacing(28, after: header)
+
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.alwaysBounceVertical = true
+        scrollView.keyboardDismissMode = .interactive
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentStack)
+
         NSLayoutConstraint.activate([
-            loginButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            loginButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
-            loginButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20),
-            loginButton.heightAnchor.constraint(equalToConstant: 68),
-            
-            stackView.leadingAnchor
-                .constraint(equalTo: view.layoutMarginsGuide.leadingAnchor),
-            stackView.trailingAnchor
-                .constraint(equalTo: view.layoutMarginsGuide.trailingAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            
-            passwordTextField.heightAnchor.constraint(equalToConstant: 68),
-            usernameTextField.heightAnchor.constraint(equalToConstant: 68),
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            contentStack.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: 16),
+            contentStack.leadingAnchor.constraint(
+                equalTo: scrollView.frameLayoutGuide.leadingAnchor,
+                constant: AuthTheme.horizontalPadding
+            ),
+            contentStack.trailingAnchor.constraint(
+                equalTo: scrollView.frameLayoutGuide.trailingAnchor,
+                constant: -AuthTheme.horizontalPadding
+            ),
+            contentStack.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -24),
+
+            loginButton.leadingAnchor.constraint(equalTo: contentStack.leadingAnchor),
+            loginButton.trailingAnchor.constraint(equalTo: contentStack.trailingAnchor)
         ])
+    }
+
+    private func setLoading(_ isLoading: Bool) {
+        loginButton.isEnabled = !isLoading
+        usernameTextField.isEnabled = !isLoading
+        passwordTextField.isEnabled = !isLoading
+        if isLoading {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
+    }
+
+    private func presentAuthAlert(title: String, message: String) {
+        let dialog = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        dialog.addAction(UIAlertAction(title: "OK", style: .default))
+        present(dialog, animated: true)
     }
 }
 
-
 extension LoginViewController: UITextFieldDelegate {
-    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField === usernameTextField {
-            // Move focus to password field when hitting Next on username
             passwordTextField.becomeFirstResponder()
-        } else if textField === passwordTextField {
-            // Dismiss keyboard when hitting Done on password
-            textField.resignFirstResponder()
         } else {
             textField.resignFirstResponder()
+            loginButtonTapped()
         }
-        return true
-    }
-    
-    func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
-        usernameTextField.resignFirstResponder()
         return true
     }
 }

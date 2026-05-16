@@ -10,13 +10,19 @@ import SwiftData
 class FavoriteMoviesViewController: UIViewController {
     var modelContext: ModelContext!
     var movieService: MovieService?
+
     private var tableView: UITableView!
+    private var emptyStateView: UIView!
     private var favoriteMovies = [FavoriteMovie]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.title = "Favorite movies"
-        setupTableView()
+        AuthTheme.applyBackground(to: view)
+        AuthTheme.configureNavigationBar(navigationController?.navigationBar)
+        navigationItem.backButtonDisplayMode = .minimal
+        navigationItem.largeTitleDisplayMode = .never
+        title = "My List"
+        setupUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -24,21 +30,37 @@ class FavoriteMoviesViewController: UIViewController {
         loadFavoriteMovies()
     }
 
-    private func setupTableView() {
+    private func setupUI() {
         tableView = UITableView()
+        AuthTheme.styleMovieListTableView(tableView)
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(MovieTableViewCell.self, forCellReuseIdentifier: "MovieCell")
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = 200
+        tableView.estimatedRowHeight = 156
         tableView.translatesAutoresizingMaskIntoConstraints = false
+
+        emptyStateView = AuthTheme.makeEmptyStateView(
+            icon: "heart",
+            title: "No favorites yet",
+            message: "Tap the heart on any movie from Home or Genres to build your list."
+        )
+        emptyStateView.translatesAutoresizingMaskIntoConstraints = false
+        emptyStateView.isHidden = true
+
         view.addSubview(tableView)
+        view.addSubview(emptyStateView)
 
         NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            emptyStateView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            emptyStateView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            emptyStateView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emptyStateView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
 
@@ -48,10 +70,27 @@ class FavoriteMoviesViewController: UIViewController {
                 sortBy: [SortDescriptor(\.title, order: .forward)]
             )
             favoriteMovies = try modelContext.fetch(fetchDescriptor)
-            tableView.reloadData()
+            updateUI()
         } catch {
             print(error)
         }
+    }
+
+    private func updateUI() {
+        let isEmpty = favoriteMovies.isEmpty
+        emptyStateView.isHidden = !isEmpty
+        tableView.isHidden = isEmpty
+
+        if isEmpty {
+            tableView.tableHeaderView = nil
+        } else {
+            tableView.tableHeaderView = AuthTheme.makeListHeaderView(
+                title: "Favorites",
+                count: favoriteMovies.count
+            )
+        }
+
+        tableView.reloadData()
     }
 
     private func removeFromFavorite(movie: FavoriteMovie) {

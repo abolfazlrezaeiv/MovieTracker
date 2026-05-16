@@ -87,6 +87,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     /// Genre
                     if let genre = nav.topViewController as? GenreViewController {
                         genre.movieService = movieService
+                        genre.modelContext = modelContext
                     }
                     /// Profile
                     if let profile = nav.topViewController as? ProfileViewController {
