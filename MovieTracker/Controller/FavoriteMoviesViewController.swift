@@ -134,10 +134,10 @@ extension FavoriteMoviesViewController: UITableViewDelegate {
         let favorite = favoriteMovies[indexPath.row]
         guard favorite.movieId > 0 else { return }
 
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "MovieDetailsVC") as! MovieDetailViewController
+        let vc = MovieDetailViewController()
         vc.movieId = favorite.movieId
         vc.movieService = movieService
+        vc.modelContext = modelContext
         navigationController?.pushViewController(vc, animated: true)
     }
 }

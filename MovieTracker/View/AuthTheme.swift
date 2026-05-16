@@ -344,6 +344,55 @@ enum AuthTheme {
         return container
     }
 
+    static func makeSectionTitleLabel(_ text: String) -> UILabel {
+        let label = UILabel()
+        label.text = text.uppercased()
+        label.font = .systemFont(ofSize: 12, weight: .semibold)
+        label.textColor = textSecondary
+        return label
+    }
+
+    static func makeDetailBodyLabel() -> UILabel {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 16, weight: .regular)
+        label.textColor = textPrimary
+        label.numberOfLines = 0
+        return label
+    }
+
+    static func makeRatingBadge(text: String) -> UIStackView {
+        let icon = UIImageView(image: UIImage(
+            systemName: "star.fill",
+            withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .semibold)
+        ))
+        icon.tintColor = accent
+        icon.contentMode = .scaleAspectFit
+        icon.setContentHuggingPriority(.required, for: .horizontal)
+        icon.setContentHuggingPriority(.required, for: .vertical)
+        icon.setContentCompressionResistancePriority(.required, for: .horizontal)
+        icon.setContentCompressionResistancePriority(.required, for: .vertical)
+
+        let label = UILabel()
+        label.text = text
+        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.textColor = textPrimary
+        label.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+
+        let stack = UIStackView(arrangedSubviews: [icon, label])
+        stack.axis = .horizontal
+        stack.spacing = 4
+        stack.alignment = .center
+        stack.distribution = .fill
+        stack.isLayoutMarginsRelativeArrangement = true
+        stack.layoutMargins = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
+        stack.backgroundColor = accentMuted
+        stack.layer.cornerRadius = 8
+        stack.clipsToBounds = true
+        stack.setContentHuggingPriority(.required, for: .horizontal)
+        stack.setContentHuggingPriority(.required, for: .vertical)
+        return stack
+    }
+
     static func styleProfileTableView(_ tableView: UITableView) {
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none

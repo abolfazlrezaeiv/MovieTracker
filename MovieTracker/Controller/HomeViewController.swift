@@ -196,11 +196,11 @@ extension HomeViewController: UITableViewDelegate {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath
     ) {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let vc = storyboard.instantiateViewController(withIdentifier: "MovieDetailsVC") as! MovieDetailViewController
+        let vc = MovieDetailViewController()
         vc.movieId = movies[indexPath.row].id
         vc.movieService = movieService
-        
+        vc.modelContext = modelContext
+
         navigationController?
             .pushViewController(
                 vc,

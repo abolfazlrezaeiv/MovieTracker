@@ -138,13 +138,10 @@ class MovieViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        let detailVC = storyboard.instantiateViewController(
-            identifier: "MovieDetailsVC"
-        ) as! MovieDetailViewController
-
+        let detailVC = MovieDetailViewController()
         detailVC.movieService = movieService
         detailVC.movieId = movies[indexPath.row].id
+        detailVC.modelContext = modelContext
 
         navigationController?.pushViewController(detailVC, animated: true)
     }

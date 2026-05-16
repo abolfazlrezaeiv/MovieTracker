@@ -77,7 +77,10 @@ class MovieTableViewCell: UITableViewCell {
 
         ratingIcon.image = UIImage(systemName: "star.fill")
         ratingIcon.tintColor = AuthTheme.accent
+        ratingIcon.contentMode = .scaleAspectFit
         ratingIcon.setContentHuggingPriority(.required, for: .horizontal)
+        ratingIcon.setContentHuggingPriority(.required, for: .vertical)
+        ratingIcon.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         ratingLabel.font = .systemFont(ofSize: 13, weight: .semibold)
         ratingLabel.textColor = AuthTheme.textPrimary
@@ -92,6 +95,8 @@ class MovieTableViewCell: UITableViewCell {
         ratingBadge.clipsToBounds = true
         ratingBadge.addArrangedSubview(ratingIcon)
         ratingBadge.addArrangedSubview(ratingLabel)
+        ratingBadge.setContentHuggingPriority(.required, for: .horizontal)
+        ratingBadge.setContentHuggingPriority(.required, for: .vertical)
 
         favoriteButton.tintColor = AuthTheme.accent
         favoriteButton.addTarget(self, action: #selector(handleFavoriteTap), for: .touchUpInside)

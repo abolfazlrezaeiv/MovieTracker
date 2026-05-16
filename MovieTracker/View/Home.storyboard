@@ -145,14 +145,6 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="98S-5L-Z4P"/>
-                    <connections>
-                        <outlet property="actorLabel" destination="sZg-In-pDK" id="la8-iv-CMU"/>
-                        <outlet property="countryBuiltLabel" destination="pwW-Px-5eb" id="VvF-qB-Mcm"/>
-                        <outlet property="imageBox" destination="EHY-Rb-PTf" id="QKR-m0-MRX"/>
-                        <outlet property="movieTitle" destination="iLd-3E-bty" id="oWt-sj-uUp"/>
-                        <outlet property="plotLabel" destination="Cqa-Q6-nSk" id="Zci-pL-7Oe"/>
-                        <outlet property="releaseYearLabel" destination="7Zn-j2-61K" id="98g-rC-UkI"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="xuQ-pO-zpi" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
