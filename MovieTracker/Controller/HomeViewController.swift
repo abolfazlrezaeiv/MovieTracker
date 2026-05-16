@@ -29,9 +29,27 @@ class HomeViewController: UIViewController {
         fetchMovies(page: currentPage, keyword: nil)
         currentPage = 1
         loadFavoriteMovies()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleFavoritesDidChange),
+            name: .favoritesDidChange,
+            object: nil
+        )
         super.viewDidLoad()
     }
-    
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadFavoriteMovies()
+    }
+
+    @objc private func handleFavoritesDidChange() {
+        loadFavoriteMovies()
+    }
     
     func loadFavoriteMovies() {
         do {
@@ -59,21 +77,11 @@ class HomeViewController: UIViewController {
     }
     
     func addToFavorite(movie: MovieItem) {
-        var poster: Data?
-        guard let url = URL(string: movie.poster) else {
-            return
-        }
-        URLSession.shared.dataTask(
-                with: url,
-                completionHandler: { data,response,error in
-                    DispatchQueue.main.async {
-                        if let data = data {
-                            poster = data
-                        }
-                    }
-                }
-            ).resume()
-        let favorite = FavoriteMovie(title: movie.title,poster: poster, )
+        let favorite = FavoriteMovie(
+            movieId: movie.id,
+            title: movie.title,
+            posterURL: movie.poster
+        )
         modelContext.insert(favorite)
         
         do {
@@ -81,6 +89,18 @@ class HomeViewController: UIViewController {
             loadFavoriteMovies()
         } catch {
             print(error)
+        }
+        
+        Task {
+            guard let url = URL(string: movie.poster),
+                  let (data, _) = try? await URLSession.shared.data(from: url) else {
+                return
+            }
+            favorite.poster = data
+            try? modelContext.save()
+            await MainActor.run {
+                self.loadFavoriteMovies()
+            }
         }
     }
     
@@ -128,7 +148,7 @@ extension HomeViewController: UITableViewDataSource {
             withIdentifier: "MovieCell",
             for: indexPath) as! MovieTableViewCell
         
-        let existingFavorite = favoriteMovies.first { $0.title == movies[indexPath.row].title }
+        let existingFavorite = favoriteMovies.first { $0.movieId == movies[indexPath.row].id }
         let isFavoriteItem = (existingFavorite != nil)
         
         cell.configure(movie: movies[indexPath.row],isFavorite: isFavoriteItem) {

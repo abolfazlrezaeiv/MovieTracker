@@ -130,4 +130,37 @@ class MovieTableViewCell: UITableViewCell {
                 }
             ).resume()
     }
+
+    func configure(
+        favorite: FavoriteMovie,
+        onFavoriteTapped: @escaping () -> Void
+    ) {
+        self.onFavoriteTapped = onFavoriteTapped
+
+        titleLabel.text = favorite.title
+        yearLabel.text = nil
+        countryLabel.text = nil
+        rateLabel.text = nil
+        genresLabel.text = nil
+        favotiteIcon.image = UIImage(systemName: "heart.fill")
+
+        if let data = favorite.poster, let image = UIImage(data: data) {
+            poster.image = image
+        } else {
+            poster.image = nil
+            loadPoster(from: favorite.posterURL)
+        }
+    }
+
+    private func loadPoster(from urlString: String) {
+        guard let url = URL(string: urlString) else { return }
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            DispatchQueue.main.async {
+                if error != nil { return }
+                if let data = data {
+                    self.poster.image = UIImage(data: data)
+                }
+            }
+        }.resume()
+    }
 }

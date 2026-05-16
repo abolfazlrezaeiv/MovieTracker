@@ -5,11 +5,14 @@
 //  Created by Abolfazl Rezaei on 10/26/25.
 //
 import UIKit
+import SwiftData
 
 class ProfileViewController: UIViewController {
     var tableView: UITableView!
     
     var userService: UserService?
+    var movieService: MovieService?
+    var modelContext: ModelContext!
     var options : [String] = ["My List", "Sign Out"]
     var onLogoutSucces: (() -> Void)?
     
@@ -58,11 +61,11 @@ extension ProfileViewController: UITableViewDataSource, UITableViewDelegate {
     ) {
         print(indexPath.row)
         if indexPath.row == 0 {
+            let favoritesVC = FavoriteMoviesViewController()
+            favoritesVC.modelContext = modelContext
+            favoritesVC.movieService = movieService
             navigationController?
-                .pushViewController(
-                    FavoriteMoviesViewController(),
-                    animated: true
-                )
+                .pushViewController(favoritesVC, animated: true)
         }
         
         if indexPath.row == 1 {

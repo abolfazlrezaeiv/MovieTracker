@@ -19,13 +19,42 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var modelContext: ModelContext?
     
     fileprivate func setupSwiftData() {
-        do {
-            let container = try ModelContainer(for: FavoriteMovie.self)
-            self.modelContainer = container
-            self.modelContext = ModelContext(container)
-            
-        } catch {
-            fatalError("Failed to initialize SwiftData: \(error)")
+        if let container = makeModelContainer() {
+            modelContainer = container
+            modelContext = ModelContext(container)
+            return
+        }
+
+        // Existing installs may fail migration after schema changes; reset and retry once.
+        deleteSwiftDataStore()
+        if let container = makeModelContainer() {
+            modelContainer = container
+            modelContext = ModelContext(container)
+            return
+        }
+
+        fatalError("Failed to initialize SwiftData after store reset")
+    }
+
+    private func makeModelContainer() -> ModelContainer? {
+        try? ModelContainer(for: FavoriteMovie.self)
+    }
+
+    private func deleteSwiftDataStore() {
+        guard let appSupport = FileManager.default.urls(
+            for: .applicationSupportDirectory,
+            in: .userDomainMask
+        ).first else { return }
+
+        let storeURL = appSupport.appendingPathComponent("default.store")
+        let relatedURLs = [
+            storeURL,
+            URL(fileURLWithPath: storeURL.path + "-shm"),
+            URL(fileURLWithPath: storeURL.path + "-wal")
+        ]
+
+        for url in relatedURLs where FileManager.default.fileExists(atPath: url.path) {
+            try? FileManager.default.removeItem(at: url)
         }
     }
     
@@ -62,6 +91,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     /// Profile
                     if let profile = nav.topViewController as? ProfileViewController {
                         profile.userService = userService
+                        profile.movieService = movieService
+                        profile.modelContext = modelContext
                         profile.onLogoutSucces = { [weak self] in
                             guard let self else { return }
                             let auth = self.makeAuthController()
